@@ -1,105 +1,98 @@
-#define R1 0
-#define R2 1
-#define R3 2
-#define R4 3
-#define R5 4
-#define R6 5
-#define R7 6
-#define R8 7
-#define C1 14
-#define C2 15
-#define C3 16
-#define C4 17
-#define C5 18
-#define C6 19
-#define C7 20
-#define C8 21
+#include "LedControl.h"
 
-int position=0;
-  
-  int MatrizFrase[8][80] = {
+#define DIN 7
+#define CLK 6
+#define LOAD 5
 
-  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-  { 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0 },
-  { 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0 },
-  { 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0 },
-  { 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1 },
-  { 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0 },
-  { 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0 },
-  { 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0 }
-
-};
+LedControl matriz = LedControl(DIN, CLK, LOAD, 1);
 
 void setup() {
-   pinMode(R1, OUTPUT);
-   pinMode(R2, OUTPUT);
-   pinMode(R3, OUTPUT);
-   pinMode(R4, OUTPUT);
-   pinMode(R5, OUTPUT);
-   pinMode(R6, OUTPUT);
-   pinMode(R7, OUTPUT);
-   pinMode(R8, OUTPUT);
-   pinMode(C1, OUTPUT);
-   pinMode(C2, OUTPUT);
-   pinMode(C3, OUTPUT);
-   pinMode(C4, OUTPUT);
-   pinMode(C5, OUTPUT);
-   pinMode(C6, OUTPUT);
-   pinMode(C7, OUTPUT);
-   pinMode(C8, OUTPUT);
+  matriz.shutdown(0, false);
+  matriz.setIntensity(0, 8);
+  for (int i = 14; i <= 21; i++)
+    pinMode(i, OUTPUT);
+  for (int i = 22; i <= 29; i++)
+    pinMode(i, OUTPUT);
+  for (int i = 14; i <= 21; i++)
+    digitalWrite(i, HIGH);
+  for (int i = 22; i <= 29; i++)
+    digitalWrite(i, LOW);
+}
 
-  digitalWrite(R1,HIGH);
-  digitalWrite(R2,HIGH);
-  digitalWrite(R3,HIGH);
-  digitalWrite(R4,HIGH);
-  digitalWrite(R5,HIGH);
-  digitalWrite(R6,HIGH);
-  digitalWrite(R7,HIGH);
-  digitalWrite(R8,HIGH);
-  digitalWrite(C1,LOW);
-  digitalWrite(C2,LOW);
-  digitalWrite(C3,LOW);
-  digitalWrite(C4,LOW);
-  digitalWrite(C5,LOW);
-  digitalWrite(C6,LOW);
-  digitalWrite(C7,LOW);
-  digitalWrite(C8,LOW);
+void pintarLED(int x, int y) {
+  digitalWrite(14 + y, LOW);
+  digitalWrite(22 + x, HIGH);
+  delayMicroseconds(1100);
+  digitalWrite(14 + y, HIGH);
+  digitalWrite(22 + x, LOW);
 }
 
 
+byte buffer[8][16] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                       { 0, 1, 0, 0,1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0 },
+                       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                       { 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0 },
+                       { 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
 
-void  SelectRow(int row){
-  if (row==1) digitalWrite(R1,LOW); else digitalWrite(R1,HIGH);
-  if (row==2) digitalWrite(R2,LOW); else digitalWrite(R2,HIGH);
-  if (row==3) digitalWrite(R3,LOW); else digitalWrite(R3,HIGH);
-  if (row==4) digitalWrite(R4,LOW); else digitalWrite(R4,HIGH);
-  if (row==5) digitalWrite(R5,LOW); else digitalWrite(R5,HIGH);
-  if (row==6) digitalWrite(R6,LOW); else digitalWrite(R6,HIGH);
-  if (row==7) digitalWrite(R7,LOW); else digitalWrite(R7,HIGH);
-  if (row==8) digitalWrite(R8,LOW); else digitalWrite(R8,HIGH);
-}
+byte MatrizFrase[8][110] = {
 
-void Set_LED_in_Active_Row(int column, int  state){
-  if (column==1) digitalWrite(C1,state); 
-  if (column==2) digitalWrite(C2,state);  
-  if (column==3) digitalWrite(C3,state); 
-  if (column==4) digitalWrite(C4,state);  
-  if (column==5) digitalWrite(C5,state); 
-  if (column==6) digitalWrite(C6,state);  
-  if (column==7) digitalWrite(C7,state); 
-  if (column==8) digitalWrite(C8,state);  
-}
+  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+};
 
-void loop() {
-
-  for (int x=0; x<5;x++){
-    for (int j=0;j<8;j++){
-    SelectRow(j+1);
-      for (int i=0;i<8;i++){
-        Set_LED_in_Active_Row(i+1,MatrizFrase[j][(i+position)-abs((i+position)/80)*80]);
-      }
-      delay(4);
+int aumentar = -4;
+void setMatriz() {
+  for (int i = 0; i < 8; i++)
+    for (int j = 0; j < 16; j++) {
+      if (MatrizFrase[i][(j + aumentar)% 110]  == 1)
+        buffer[i][j] = 1;
+      else
+        buffer[i][j] = 0;
     }
+  aumentar++;
+  if(aumentar >= 100){
+    for(int i = 0; i < 8; i++) {
+      for (int j = 0; j < 110 ; j++)
+        buffer[i][j]=0;
+    }
+    aumentar = -4;
   }
-  position=position+1;
+
+}
+
+void mostrarMatriz() {
+  // Con driver
+  for (int i = 0; i < 8; i++)
+    for (int j = 0; j < 8; j++)
+      matriz.setLed(0, i, j, buffer[i][j] == 1 ? true : false);
+  // Sin driver
+  for (int k = 0; k < 3; k++)
+    for (int i = 0; i < 8; i++)
+      for (int j = 8; j < 16; j++)
+        if (buffer[i][j] == 1)
+          pintarLED(j - 8, i);
+        else
+          delayMicroseconds(50);
+}
+
+long int t0 = 0;
+long int t1 = 0;
+void loop() {
+  t1 = millis();
+  if ((t1 - t0) >= 150) {
+    t0 = millis();
+  }
+  setMatriz();
+  delay(2);
+  mostrarMatriz();
+  delay(1);
 }
