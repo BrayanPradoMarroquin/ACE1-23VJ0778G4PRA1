@@ -99,6 +99,7 @@ const unsigned long debounceDelay = 50;
 int buttonState = LOW;
 int lastButtonState = LOW;
 unsigned long lastDebounceTime = 0;
+
 void loop() {
   int reading = digitalRead(13);
   borrarAvion();
