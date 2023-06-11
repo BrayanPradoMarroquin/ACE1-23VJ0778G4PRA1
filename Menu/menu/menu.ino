@@ -51,37 +51,112 @@ int buttonState11 = LOW;
 int lastButtonState11 = LOW;
 
 int buttonState10 = LOW;
+int buttonState10P = LOW;
 int lastButtonState10 = LOW;
+int lastButtonState10P = LOW;
 
 unsigned long lastDebounceTime = 0;
 unsigned long lastDebounceTime12 = 0;
 unsigned long lastDebounceTime11 = 0;
 unsigned long lastDebounceTime10 = 0;
 
+unsigned long buttonPressStartTime = 0;
+unsigned long buttonPressStartTime12 = 0;
+unsigned long buttonPressStartTime11 = 0;
+unsigned long buttonPressStartTime10 = 0;
+unsigned long buttonPressStartTime10P = 0;
+
 int xAvion = 0;
 int yAvion = 0;
 int xMina = -1;
 int yMina = -1;
-int state = 1;
 
+int state = 0;
 int vidaInicial = 3;
 int vida = 1;
 int t = 0;
 int velocidad = 200;
+int direccion = 1;
+int aumentar = -4;
 
-void iniciarJuego(){
+void limpiarBuffer() {
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 16; j++)
+      buffer[i][j] = 0;
+  }
+}
+
+void frase() {
+  Serial.begin(9600);
+  int reading = digitalRead(13);
+  int reading10 = digitalRead(10);
+  t1 = millis();
+  if ((t1 - t0) >= 150) {
+    t0 = millis();
+    aumentar = aumentar + direccion;
+  }
+
+  if (reading != lastButtonState) {
+    lastDebounceTime = millis();
+  }
+
+  if (reading10 != lastButtonState10P) {
+    lastDebounceTime10 = millis();
+
+    if (reading10 == HIGH) {  //press/hold
+      Serial.println("testing1");
+      buttonPressStartTime10 = millis();
+    }
+    if (reading == LOW) {  //release
+      Serial.println("testing2");
+      buttonPressStartTime10P = millis();
+    }
+  }
+  if ((millis() - lastDebounceTime) > debounceDelay) {
+    if (reading != buttonState) {
+      buttonState = reading;
+      if (buttonState == HIGH) {
+        if (direccion == 1) {
+          direccion = -1;
+        } else {
+          direccion = 1;
+        };
+      }
+    }
+  }
+
+  Serial.println(millis() - buttonPressStartTime10);
+  Serial.println(buttonPressStartTime10);
+  Serial.println(buttonPressStartTime10P);
+  Serial.println("  ");
+  if (buttonPressStartTime10 != buttonPressStartTime10P) {
+    if (reading10 == LOW && (buttonPressStartTime10P - buttonPressStartTime10) >= 2000) {
+      delay(100);
+      buttonPressStartTime10P = buttonPressStartTime10;
+      state = 1;
+    }
+  }
+  lastButtonState10P = reading10;
+  lastButtonState = reading;
+  setMatriz();
+  delay(2);
+  mostrarMatriz();
+  delay(1);
+}
+
+void iniciarJuego() {
   int reading = digitalRead(13);
   borrarAvion();
   t1 = millis();
   if ((t1 - t0) >= velocidad) {
     t0 = millis();
     xAvion++;
-    if(xAvion == 16){
+    if (xAvion == 16) {
       xAvion = 0;
       yAvion++;
     }
     if (yMina != -1) {
-    moverMina();
+      moverMina();
     }
   }
   if (reading != lastButtonState) {
@@ -96,23 +171,67 @@ void iniciarJuego(){
       }
     }
   }
+
+
   lastButtonState = reading;
 
   pintarAvion();
-  
+
   //Edificio.ino
   crearedificios();
   mostrarMatriz();
   delayMicroseconds(0.5);
 }
 
-void pausarJuego(){
+void pausarJuego() {
   mostrarVidas();
+  Serial.begin(9600);
+  delay(100);
+  int reading = digitalRead(10);
+  if (reading != lastButtonState10P) {
+    lastDebounceTime10 = millis();
+
+    if (reading == HIGH) {  //press/hold
+      Serial.println("testing1");
+      buttonPressStartTime10 = millis();
+    }
+    if (reading == LOW) {  //release
+      Serial.println("testing2");
+      buttonPressStartTime10P = millis();
+    }
+  }
+
+  if ((millis() - lastDebounceTime10) > debounceDelay) {
+    if (reading != buttonState10P) {
+      buttonState10P = reading;
+    }
+  }
+  Serial.println(millis() - buttonPressStartTime10);
+  Serial.println(buttonPressStartTime10);
+  Serial.println(buttonPressStartTime10P);
+  Serial.println("  ");
+
+  if (buttonPressStartTime10 != buttonPressStartTime10P) {
+    if (reading == LOW && (buttonPressStartTime10P - buttonPressStartTime10) >= 3000) {
+      state = 1;
+      buttonPressStartTime10P = buttonPressStartTime10;
+    }
+    if (reading == LOW && (buttonPressStartTime10P - buttonPressStartTime10) >= 2000 && (buttonPressStartTime10P - buttonPressStartTime10) < 3000) {
+      state = 2;
+      buttonPressStartTime10P = buttonPressStartTime10;
+    }
+  }
+  lastButtonState10P = reading;
 }
 
 void loop() {
+  //Frase Inicial
+  if (state == 0) {
+    frase();
+  }
   //Mostrar Menu
   if (state == 1) {
+    limpiarBuffer();
     mostrarMenu();
     int reading = digitalRead(12);
     if (reading != lastButtonState12) {
@@ -129,6 +248,7 @@ void loop() {
       }
     }
     lastButtonState12 = reading;
+    //---------------------------------------------------
   } else if (state == 2) {
     iniciarJuego();
     int reading = digitalRead(10);
@@ -145,7 +265,8 @@ void loop() {
       }
     }
     lastButtonState10 = reading;
-  } else if(state == 3){
+    //---------------------------------------------------
+  } else if (state == 3) {
     pausarJuego();
   }
 
