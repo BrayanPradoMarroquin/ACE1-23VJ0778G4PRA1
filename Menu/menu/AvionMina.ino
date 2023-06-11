@@ -5,10 +5,21 @@
 #define LOAD 5
 
 void pintarAvion() {
-  buffer[yAvion][xAvion] = 1;
-  buffer[yAvion + 1][xAvion] = 1;
-  buffer[yAvion + 1][xAvion + 1] = 1;
-  buffer[yAvion + 1][xAvion + 2] = 1;
+  if (buffer[yAvion + 1][xAvion + 2] == 1) {
+    yAvion = yAvion - 2;
+    xAvion = xAvion - 2;
+    vida--;
+    if(vida == 0){
+      state = 1;
+      xAvion = 0;
+      yAvion = 0;
+    }
+  } else {
+    buffer[yAvion][xAvion] = 1;
+    buffer[yAvion + 1][xAvion] = 1;
+    buffer[yAvion + 1][xAvion + 1] = 1;
+    buffer[yAvion + 1][xAvion + 2] = 1;
+  }
 }
 
 void borrarAvion() {

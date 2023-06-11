@@ -25,13 +25,6 @@ int edificios[16][2] = { { 0, 0 },
                          { 15, 0 },
                         };
 
-void pintarLED(int x, int y) {
-    digitalWrite(14  + y, LOW);
-    digitalWrite(22 + x, HIGH);
-    delayMicroseconds(1100);
-    digitalWrite(14  + y, HIGH);
-    digitalWrite(22 + x, LOW);
-}
 
 void borrarEdificio(int x) {
   int y = edificios[x][1];
