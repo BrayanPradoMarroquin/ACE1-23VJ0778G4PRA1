@@ -466,9 +466,6 @@ void mostrarVidas() {
       mostrarMenu();
       matriz.clearDisplay(0);
     }
-
-
-
   } else if (vida == 1) {
     mostrarUno();
   } else if (vida == 2) {
@@ -491,10 +488,39 @@ void mostrarVidas() {
     mostrarDiez();
   }
 }
+/*
+   __________Mostrar la cantidad de nivles ___________________
+*/
+int nivel = 0;
+void mostrarNiveles() {
+  if (nivel == 0) {
+    mostrarCero();
+  } else if (nivel == 1) {
+    mostrarUno();
+  } else if (nivel == 2) {
+    mostrarDos();
+  } else if (nivel == 3) {
+    mostrarTres();
+  } else if (nivel == 4) {
+    mostrarCuatro();
+  } else if (nivel == 5) {
+    mostrarCinco();
+  } else if (nivel == 6) {
+    mostrarSeis();
+  } else if (nivel == 7) {
+    mostrarSiete();
+  } else if (nivel == 8) {
+    mostrarOcho();
+  } else if (nivel == 9) {
+    mostrarNueve();
+  } else if (nivel == 10) {
+    mostrarDiez();
+  }
+}
 //____________Loops____________________
 
 void loop() {
-  vida = 0;
-  mostrarVidas();
+  nivel = 10;
+  mostrarNiveles();
   matriz.clearDisplay(0);
 }
