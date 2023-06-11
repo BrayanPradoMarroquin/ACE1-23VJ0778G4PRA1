@@ -38,15 +38,33 @@ void setup() {
   }*/
   //pinMode(13, INPUT);
 }
+int aumentar = 0;
+long int t0 = millis();
+long int t1 = millis();
+bool direccion = true;
+int numeros = 1;
 
 byte matrizO[8][16] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                        { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+
+//_________________Sección de matrices con numeros_______________________
+int cero[8][16] = {
+
+  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 },
+  { 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+  { 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+  { 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+  { 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+  { 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+  { 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 }
+};
 
 int uno[8][16] = {
 
@@ -202,11 +220,29 @@ void pintarMatriz() {
     }
   }
 }
-int aumentar = 0;
-long int t0 = millis();
-long int t1 = millis();
-bool direccion = true;
-int numeros = 1;
+/*
+  ___________________Metodos para mostras los numeros___________________________________
+
+*/
+void mostrarCero() {
+  //Mostrar 0 con driver
+  for (int i = 0; i < 8; i++) {
+    for (int j = 8; j < 16; j++) {
+      matriz.setLed(0, i, j - 8, cero[i][j] == 1 ? true : false);
+    }
+  }
+  //Mostrar 0 sin driver
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      int residuo = 80;
+
+      if (cero[i][j] == 1) {
+        pintarLED(j, i);
+      }
+    }
+  }
+}
+//
 void mostrarUno() {
   //Mostrar 1 con driver
   for (int i = 0; i < 8; i++) {
@@ -415,10 +451,50 @@ void mostrarMenu() {
     }
   }
 }
-//________________________________
+//_________Vidas____________________
+int vida = 0;
 int t = 0;
-void loop() {
+void mostrarVidas() {
+  if (vida == 0) {
+    if (t >= 0 && t < 20) {
+      mostrarCero();
+      t++;
+    } else if (t >= 20 && t < 30) {
+      pintarMatriz();
+      t++;
+    } else {
+      mostrarMenu();
+      matriz.clearDisplay(0);
+    }
 
-  mostrarMenu();
+
+
+  } else if (vida == 1) {
+    mostrarUno();
+  } else if (vida == 2) {
+    mostrarDos();
+  } else if (vida == 3) {
+    mostrarTres();
+  } else if (vida == 4) {
+    mostrarCuatro();
+  } else if (vida == 5) {
+    mostrarCinco();
+  } else if (vida == 6) {
+    mostrarSeis();
+  } else if (vida == 7) {
+    mostrarSiete();
+  } else if (vida == 8) {
+    mostrarOcho();
+  } else if (vida == 9) {
+    mostrarNueve();
+  } else if (vida == 10) {
+    mostrarDiez();
+  }
+}
+//____________Loops____________________
+
+void loop() {
+  vida = 0;
+  mostrarVidas();
   matriz.clearDisplay(0);
 }
