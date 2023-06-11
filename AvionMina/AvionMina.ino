@@ -43,10 +43,15 @@ int yAvion = 0;
 int xMina = -1;
 int yMina = -1;
 void pintarAvion() {
-  buffer[yAvion][xAvion] = 1;
-  buffer[yAvion + 1][xAvion] = 1;
-  buffer[yAvion + 1][xAvion + 1] = 1;
-  buffer[yAvion + 1][xAvion + 2] = 1;
+  if (buffer[yAvion + 1][xAvion + 2] == 1) {
+    yAvion = yAvion - 2;
+    xAvion = xAvion - 2;
+  } else {
+    buffer[yAvion][xAvion] = 1;
+    buffer[yAvion + 1][xAvion] = 1;
+    buffer[yAvion + 1][xAvion + 1] = 1;
+    buffer[yAvion + 1][xAvion + 2] = 1;
+  }
 }
 
 void borrarAvion() {
@@ -66,10 +71,10 @@ void mina() {
 
 void moverMina() {
   if (yMina != -1) {
-    buffer[yMina][xMina] = 0;  
+    buffer[yMina][xMina] = 0;
     if (yMina < 7) {
-      yMina++;                   
-      buffer[yMina][xMina] = 1; 
+      yMina++;
+      buffer[yMina][xMina] = 1;
     } else {
       xMina = -1;
       yMina = -1;
@@ -107,7 +112,7 @@ void loop() {
   if ((t1 - t0) >= 150) {
     t0 = millis();
     xAvion++;
-    if(xAvion == 16){
+    if (xAvion == 16) {
       xAvion = 0;
       yAvion++;
     }

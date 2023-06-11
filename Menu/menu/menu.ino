@@ -67,12 +67,13 @@ int state = 1;
 int vidaInicial = 3;
 int vida = 1;
 int t = 0;
+int velocidad = 200;
 
 void iniciarJuego(){
   int reading = digitalRead(13);
   borrarAvion();
   t1 = millis();
-  if ((t1 - t0) >= 150) {
+  if ((t1 - t0) >= velocidad) {
     t0 = millis();
     xAvion++;
     if(xAvion == 16){
