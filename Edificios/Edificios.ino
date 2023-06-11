@@ -1,12 +1,17 @@
 #include "LedControl.h"
+#include <stdlib.h>
+#include <Arduino.h>
 
 #define DIN 7
 #define CLK 6
 #define LOAD 5
 
 LedControl matriz = LedControl(DIN, CLK, LOAD, 1);
+int cantidadEdificios = 3;
+int edificioscolocados = 0;
 
 void setup() {
+  Serial.begin(9600); // Inicia la comunicación serial
   matriz.shutdown(0, false);
   matriz.setIntensity(0, 8);
   for (int i = 14; i <= 21; i++)
@@ -31,14 +36,14 @@ byte buffer[8][16] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 
 int tamanio = 3;
 
-int edificios[16][2] = { { 1, 3 },
-                         { 2, 3 },
+int edificios[16][2] = { { 1, 0 },
+                         { 2, 0 },
                          { 3, 0 },
                          { 4, 0 },
                          { 5, 0 },
                          { 6, 0 },
                          { 7, 0 },
-                         { 8, 4 },
+                         { 8, 0 },
                          { 9, 0 },
                          { 10, 0 },
                          { 11, 0 },
@@ -57,6 +62,25 @@ void pintarLED(int x, int y) {
     digitalWrite(22 + x, LOW);
 }
 
+void posicionRandom(){
+
+    while (edificioscolocados < cantidadEdificios) {
+      randomSeed(millis()); // Inicializa la semilla aleatoria con un valor analógico
+      int posRandmon = random(0, 15); // Genera un número aleatorio entre 0 y 99e
+      delayMicroseconds(500);
+
+      randomSeed(millis()+1);
+      int altRandom = random(1, 4);
+      delayMicroseconds(500);
+
+      if(edificios[posRandmon][1] == 0){
+        edificios[posRandmon][1] = altRandom;    
+        edificioscolocados++;      
+      }
+    }
+    crearedificios();    
+}
+
 void crearedificios() {
   //CON DRIVER
   for(int k = 0; k < 16; k++){
@@ -66,6 +90,7 @@ void crearedificios() {
       }
     }
   }
+  pintaredificio();  
 }
 
   void pintaredificio(){
@@ -90,7 +115,8 @@ void crearedificios() {
   }
 
 void loop() {
-  crearedificios();
-  pintaredificio();
+  posicionRandom();
+  //crearedificios();
+  //pintaredificio();
   delayMicroseconds(0.5);
 }
