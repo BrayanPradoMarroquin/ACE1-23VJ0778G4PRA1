@@ -116,7 +116,5 @@ void crearedificios() {
 
 void loop() {
   posicionRandom();
-  //crearedificios();
-  //pintaredificio();
   delayMicroseconds(0.5);
 }

@@ -40,6 +40,7 @@ void mina() {
 void moverMina() {
   if(buffer[yMina+1][xMina]==1){
     borrarEdificio(xMina);
+    edificioscolocados--;
     buffer[yMina][xMina] = 0;
     xMina = -1;
     yMina = -1;

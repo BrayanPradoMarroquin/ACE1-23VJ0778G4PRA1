@@ -78,6 +78,15 @@ int t = 0;
 int velocidad = 200;
 int direccion = 1;
 int aumentar = -4;
+int cantidadEdificios = 3;
+int edificioscolocados = 0;
+
+int punteoGlobal = 0;
+int punteos[5][2] = { { 0, 0 },
+                      { 0, 0 },
+                      { 0, 0 },
+                      { 0, 0 },
+                      { 0, 0 } };
 
 void limpiarBuffer() {
   for (int i = 0; i < 8; i++) {
@@ -178,7 +187,6 @@ void iniciarJuego() {
   pintarAvion();
 
   //Edificio.ino
-  crearedificios();
   mostrarMatriz();
   delayMicroseconds(0.5);
 }
@@ -213,8 +221,10 @@ void pausarJuego() {
 
   if (buttonPressStartTime10 != buttonPressStartTime10P) {
     if (reading == LOW && (buttonPressStartTime10P - buttonPressStartTime10) >= 3000) {
-      state = 1;
+      limpiarEdificios();
       buttonPressStartTime10P = buttonPressStartTime10;
+      delay(100);
+      state = 1;
     }
     if (reading == LOW && (buttonPressStartTime10P - buttonPressStartTime10) >= 2000 && (buttonPressStartTime10P - buttonPressStartTime10) < 3000) {
       state = 2;
@@ -232,6 +242,7 @@ void loop() {
   //Mostrar Menu
   if (state == 1) {
     limpiarBuffer();
+    delay(10);
     mostrarMenu();
     int reading = digitalRead(12);
     if (reading != lastButtonState12) {
@@ -242,8 +253,13 @@ void loop() {
       if (reading != buttonState12) {
         buttonState12 = reading;
         if (buttonState12 == HIGH) {
-          state = 2;
           vida = vidaInicial;
+          Serial.println("ttttttttt: ");
+          Serial.println(edificioscolocados);
+          Serial.println(cantidadEdificios);
+          posicionRandom();  //crear nuevos edificios
+          delay(100);
+          state = 2;
         }
       }
     }
