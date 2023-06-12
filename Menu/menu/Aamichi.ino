@@ -160,17 +160,17 @@ int pos2 = 0;
 void mostrarCero() {
   //Mostrar 0 con driver
   for (int i = 0; i < 8; i++) {
-    for (int j = 8; j < 16; j++) {
-      matriz.setLed(0, i, j - 8, cero[i][j] == 1 ? true : false);
+    for (int j = 0; j < 8; j++) {
+      matriz.setLed(0, i, j, cero[i][j] == 1 ? true : false);
     }
   }
-  //Mostrar 0 sin driver
+
+  //Mostrar menu sin driver
   for (int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      int residuo = 80;
+    for (int j = 8; j < 16; j++) {
 
       if (cero[i][j] == 1) {
-        pintarLED(j, i);
+        pintarLED(j - 8, i);
       }
     }
   }
@@ -186,10 +186,10 @@ void mostrarUno() {
   //Mostrar 1 sin driver
   for (int i = 0; i < 8; i++) {
     for (int j = 8; j < 16; j++) {
-      int residuo = 80;
+ 
 
       if (uno[i][j] == 1) {
-        pintarLED(j-8, i);
+        pintarLED(j - 8, i);
       }
     }
   }
@@ -205,10 +205,9 @@ void mostrarDos() {
   //Mostrar 1 sin driver
   for (int i = 0; i < 8; i++) {
     for (int j = 8; j < 16; j++) {
-      int residuo = 80;
 
       if (dos[i][j] == 1) {
-        pintarLED(j-8, i);
+        pintarLED(j - 8, i);
       }
     }
   }
@@ -221,13 +220,14 @@ void mostrarTres() {
       matriz.setLed(0, i, j, tres[i][j] == 1 ? true : false);
     }
   }
-  //Mostrar 3 sin driver
+
+  //Mostrar menu sin driver
   for (int i = 0; i < 8; i++) {
     for (int j = 8; j < 16; j++) {
       int residuo = 80;
 
       if (tres[i][j] == 1) {
-        pintarLED(j-8, i);
+        pintarLED(j - 8, i);
       }
     }
   }
@@ -236,17 +236,18 @@ void mostrarTres() {
 void mostrarCuatro() {
   //Mostrar 4 con driver
   for (int i = 0; i < 8; i++) {
-    for (int j = 8; j < 16; j++) {
-      matriz.setLed(0, i, j - 8, cuatro[i][j] == 1 ? true : false);
+    for (int j = 0; j < 8; j++) {
+      matriz.setLed(0, i, j, cuatro[i][j] == 1 ? true : false);
     }
   }
-  //Mostrar 4 sin driver
+
+  //Mostrar menu sin driver
   for (int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      int residuo = 80;
+    for (int j = 8; j < 16; j++) {
+
 
       if (cuatro[i][j] == 1) {
-        pintarLED(j, i);
+        pintarLED(j - 8, i);
       }
     }
   }
@@ -255,17 +256,18 @@ void mostrarCuatro() {
 void mostrarCinco() {
   //Mostrar 5 con driver
   for (int i = 0; i < 8; i++) {
-    for (int j = 8; j < 16; j++) {
-      matriz.setLed(0, i, j - 8, cinco[i][j] == 1 ? true : false);
+    for (int j = 0; j < 8; j++) {
+      matriz.setLed(0, i, j, cinco[i][j] == 1 ? true : false);
     }
   }
-  //Mostrar 5 sin driver
+
+  //Mostrar menu sin driver
   for (int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      int residuo = 80;
+    for (int j = 8; j < 16; j++) {
+     
 
       if (cinco[i][j] == 1) {
-        pintarLED(j, i);
+        pintarLED(j - 8, i);
       }
     }
   }
@@ -274,17 +276,18 @@ void mostrarCinco() {
 void mostrarSeis() {
   //Mostrar 6 con driver
   for (int i = 0; i < 8; i++) {
-    for (int j = 8; j < 16; j++) {
-      matriz.setLed(0, i, j - 8, seis[i][j] == 1 ? true : false);
+    for (int j = 0; j < 8; j++) {
+      matriz.setLed(0, i, j, seis[i][j] == 1 ? true : false);
     }
   }
-  //Mostrar 6 sin driver
+
+  //Mostrar menu sin driver
   for (int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      int residuo = 80;
+    for (int j = 8; j < 16; j++) {
+
 
       if (seis[i][j] == 1) {
-        pintarLED(j, i);
+        pintarLED(j - 8, i);
       }
     }
   }
@@ -293,17 +296,18 @@ void mostrarSeis() {
 void mostrarSiete() {
   //Mostrar 7 con driver
   for (int i = 0; i < 8; i++) {
-    for (int j = 8; j < 16; j++) {
-      matriz.setLed(0, i, j - 8, siete[i][j] == 1 ? true : false);
+    for (int j = 0; j < 8; j++) {
+      matriz.setLed(0, i, j, siete[i][j] == 1 ? true : false);
     }
   }
-  //Mostrar 7 sin driver
+
+  //Mostrar menu sin driver
   for (int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      int residuo = 80;
+    for (int j = 8; j < 16; j++) {
+
 
       if (siete[i][j] == 1) {
-        pintarLED(j, i);
+        pintarLED(j - 8, i);
       }
     }
   }
@@ -312,17 +316,18 @@ void mostrarSiete() {
 void mostrarOcho() {
   //Mostrar 8 con driver
   for (int i = 0; i < 8; i++) {
-    for (int j = 8; j < 16; j++) {
-      matriz.setLed(0, i, j - 8, ocho[i][j] == 1 ? true : false);
+    for (int j = 0; j < 8; j++) {
+      matriz.setLed(0, i, j, ocho[i][j] == 1 ? true : false);
     }
   }
-  //Mostrar 8 sin driver
+
+  //Mostrar menu sin driver
   for (int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      int residuo = 80;
+    for (int j = 8; j < 16; j++) {
+
 
       if (ocho[i][j] == 1) {
-        pintarLED(j, i);
+        pintarLED(j - 8, i);
       }
     }
   }
@@ -331,36 +336,38 @@ void mostrarOcho() {
 void mostrarNueve() {
   //Mostrar 9 con driver
   for (int i = 0; i < 8; i++) {
-    for (int j = 8; j < 16; j++) {
-      matriz.setLed(0, i, j - 8, nueve[i][j] == 1 ? true : false);
+    for (int j = 0; j < 8; j++) {
+      matriz.setLed(0, i, j, nueve[i][j] == 1 ? true : false);
     }
   }
-  //Mostrar 1 sin driver
+
+  //Mostrar menu sin driver
   for (int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      int residuo = 80;
+    for (int j = 8; j < 16; j++) {
+
 
       if (nueve[i][j] == 1) {
-        pintarLED(j, i);
+        pintarLED(j - 8, i);
       }
     }
   }
 }
 //Metodo para motrar el diez
 void mostrarDiez() {
-  //Mostrar 1 con driver
-  for (int i = 0; i < 8; i++) {
-    for (int j = 8; j < 16; j++) {
-      matriz.setLed(0, i, j - 8, diez[i][j] == 1 ? true : false);
-    }
-  }
-  //Mostrar 1 sin driver
+  //Mostrar 1 0con driver
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
-      int residuo = 80;
+      matriz.setLed(0, i, j, diez[i][j] == 1 ? true : false);
+    }
+  }
+
+  //Mostrar menu sin driver
+  for (int i = 0; i < 8; i++) {
+    for (int j = 8; j < 16; j++) {
+
 
       if (diez[i][j] == 1) {
-        pintarLED(j, i);
+        pintarLED(j - 8, i);
       }
     }
   }
@@ -377,10 +384,10 @@ void mostrarMenu() {
   //Mostrar menu sin driver
   for (int i = 0; i < 8; i++) {
     for (int j = 8; j < 16; j++) {
-      int residuo = 80;
+
 
       if (menu[i][j] == 1) {
-        pintarLED(j-8, i);
+        pintarLED(j - 8, i);
       }
     }
   }
