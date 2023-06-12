@@ -75,7 +75,7 @@ int state = 0;
 int vidaInicial = 3;
 int vida = 1;
 int t = 0;
-int velocidad = 200;
+int velocidad = 150;
 int direccion = 1;
 int aumentar = -4;
 int cantidadEdificios = 3;
@@ -111,7 +111,7 @@ void frase() {
   int reading = digitalRead(13);
   int reading10 = digitalRead(10);
   t1 = millis();
-  if ((t1 - t0) >= 150) {
+  if ((t1 - t0) >= velocidad) {
     t0 = millis();
     aumentar = aumentar + direccion;
   }
@@ -172,98 +172,60 @@ void configuracion() {
   Serial.println("Running Config");
   potenciometroVelocidad = map(analogRead(A0), 0, 1024, 0, 8);
   potenciometroVidas = map(analogRead(A1), 0, 1024, 0, 8);
-  if (potenciometroVelocidad == 0)
-    velocidad = 200;
-  return;
-  if (potenciometroVelocidad >= 1) {
-    // *
-    velocidad = 185;
-    pintarLED1(0, 1);
-    pintarLED1(0, 2);
-  }
-  if (potenciometroVelocidad >= 2) {
-    // **
-    velocidad = 170;
-    pintarLED1(1, 1);
-    pintarLED1(1, 2);
-  }
-  if (potenciometroVelocidad >= 3) {
-    // *
-    velocidad = 155;
-    pintarLED1(2, 1);
-    pintarLED1(2, 2);
-  }
-  if (potenciometroVelocidad >= 4) {
-    // **
-    velocidad = 140;
-    pintarLED1(3, 1);
-    pintarLED1(3, 2);
-  }
-  if (potenciometroVelocidad >= 5) {
-    // ***
-    velocidad = 125;
-    pintarLED1(4, 1);
-    pintarLED1(4, 2);
-  }
-  if (potenciometroVelocidad >= 6) {
-    // **
-    velocidad = 110;
-    pintarLED1(5, 1);
-    pintarLED1(5, 2);
-  }
-  if (potenciometroVelocidad >= 7) {
-    // ***
-    velocidad = 95;
-    pintarLED1(6, 1);
-    pintarLED1(6, 2);
+  velocidad = 200 - (potenciometroVelocidad * 15);
+  vidaInicial = 3 + potenciometroVidas;
+
+  for (int i = 1; i < 3; i++) { //horizontal
+    for (int j = 0; j < 16; j++) {
+      if (j < potenciometroVelocidad)
+        buffer[i][j] = 1;
+      else
+        buffer[i][j] = 0;
+    }
   }
 
+  for (int i = 4; i < 6; i++) {
+    for (int j = 0; j < 16; j++) {
+      if (j < potenciometroVidas)
+        buffer[i][j] = 1;
+      else
+        buffer[i][j] = 0;
+    }
+  }
 
-  if (potenciometroVidas == 0)
-    vidaInicial = 3;
-  return;
-  if (potenciometroVidas >= 1) {
-    // *
-    vidaInicial = 4;
-    pintarLED1(0, 5);
-    pintarLED1(0, 6);
+  int reading = digitalRead(10);
+  if (reading != lastButtonState10P) {
+    lastDebounceTime10 = millis();
+
+    if (reading == HIGH) {  //press/hold
+      Serial.println("testing1");
+      buttonPressStartTime10 = millis();
+    }
+    if (reading == LOW) {  //release
+      Serial.println("testing2");
+      buttonPressStartTime10P = millis();
+    }
   }
-  if (potenciometroVidas >= 2) {
-    // **
-    vidaInicial = 5;
-    pintarLED1(1, 5);
-    pintarLED1(1, 6);
+
+  if ((millis() - lastDebounceTime10) > debounceDelay) {
+    if (reading != buttonState10P) {
+      buttonState10P = reading;
+    }
   }
-  if (potenciometroVidas >= 3) {
-    // *
-    vidaInicial = 6;
-    pintarLED1(2, 5);
-    pintarLED1(2, 6);
+  Serial.println(millis() - buttonPressStartTime10);
+  Serial.println(buttonPressStartTime10);
+  Serial.println(buttonPressStartTime10P);
+  Serial.println("  ");
+
+  if (buttonPressStartTime10 != buttonPressStartTime10P) {
+    if (reading == LOW && (buttonPressStartTime10P - buttonPressStartTime10) >= 3000) {
+      buttonPressStartTime10P = buttonPressStartTime10;
+      delay(100);
+      state = 1;
+    }
   }
-  if (potenciometroVidas >= 4) {
-    // **
-    vidaInicial = 7;
-    pintarLED1(3, 5);
-    pintarLED1(3, 6);
-  }
-  if (potenciometroVidas >= 5) {
-    // ***
-    vidaInicial = 8;
-    pintarLED1(4, 5);
-    pintarLED1(4, 6);
-  }
-  if (potenciometroVidas >= 6) {
-    // **
-    vidaInicial = 9;
-    pintarLED1(5, 5);
-    pintarLED1(5, 6);
-  }
-  if (potenciometroVidas >= 7) {
-    // ***
-    vidaInicial = 10;
-    pintarLED1(6, 5);
-    pintarLED1(6, 6);
-  }
+  lastButtonState10P = reading;
+  mostrarMatriz();
 }
 
 void iniciarJuego() {
@@ -372,6 +334,8 @@ void loop() {
         if (buttonState12 == HIGH) {
           vida = vidaInicial;
           posicionRandom();  //crear nuevos edificios
+          xAvion = 0;
+          yAvion = 0;
           delay(100);
           state = 2;
         }
