@@ -13,6 +13,7 @@ void pintarAvion() {
       state = 1;
       xAvion = 0;
       yAvion = 0;
+      cantidadEdificios = 3;
     }
   } else {
     buffer[yAvion][xAvion] = 1;

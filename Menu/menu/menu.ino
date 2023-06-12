@@ -38,6 +38,12 @@ byte buffer[8][16] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
 
+double punteos[5][4] = { { 1, 3, 0, 0 },
+                         { 2, 4, 0, 0 },
+                         { 3, 5, 0, 0 },
+                         { 4, 6, 0, 0 },
+                         { 5, 4, 0, 0 } };
+
 long int t0 = 0;
 long int t1 = 0;
 long int t3 = 0;  // 1s avion desenso
@@ -82,15 +88,13 @@ int aumentar = -4;
 int cantidadEdificios = 3;
 int edificioscolocados = 0;
 int nivel = 1;
+int puntaje = 0;
+double porcentaje = 0.0;
+int cont = 0;
 
 int temp = 0;
 
 int punteoGlobal = 0;
-int punteos[5][2] = { { 0, 0 },
-                      { 0, 0 },
-                      { 0, 0 },
-                      { 0, 0 },
-                      { 0, 0 } };
 
 void limpiarBuffer() {
   for (int i = 0; i < 8; i++) {
@@ -318,6 +322,7 @@ void loop() {
     mostrarMenu();
     int reading = digitalRead(12);
     int reading11 = digitalRead(11);
+    int reading10 = digitalRead(13);
     if (reading != lastButtonState12) {
       lastDebounceTime12 = millis();
     }
@@ -348,8 +353,20 @@ void loop() {
         }
       }
     }
+
+  if ((millis() - lastDebounceTime10) > debounceDelay) {
+      if (reading10 != buttonState10) {
+        buttonState10 = reading10;
+        if (buttonState10 == HIGH) {
+          delay(100);
+          state = 6;
+        }
+      }
+    }
+
     lastButtonState11 = reading11;
     lastButtonState12 = reading;
+    lastButtonState10 = reading10;
     //---------------------------------------------------
   } else if (state == 2) {
     iniciarJuego();
@@ -391,5 +408,11 @@ void loop() {
       t3 = millis();
       state = 2;
     }
+  } else if (state == 6) {
+    if (cont == 0) {
+      calcularP();
+      cont++;
+    }
+    configuracionC();
   }
 }
