@@ -1,4 +1,3 @@
-
 #include "LedControl.h"
 
 #define DIN 7
@@ -431,7 +430,6 @@ void mostrarVidas() {
 /*
    __________Mostrar la cantidad de nivles ___________________
 */
-int nivel = 0;
 void mostrarNiveles() {
   if (nivel == 0) {
     mostrarCero();

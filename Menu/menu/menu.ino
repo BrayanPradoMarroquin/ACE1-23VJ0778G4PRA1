@@ -40,6 +40,7 @@ byte buffer[8][16] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 
 long int t0 = 0;
 long int t1 = 0;
+long int t3 = 0;  // 1s avion desenso
 const unsigned long debounceDelay = 50;
 int buttonState = LOW;
 int lastButtonState = LOW;
@@ -80,6 +81,7 @@ int direccion = 1;
 int aumentar = -4;
 int cantidadEdificios = 3;
 int edificioscolocados = 0;
+int nivel = 1;
 
 int temp = 0;
 
@@ -95,15 +97,6 @@ void limpiarBuffer() {
     for (int j = 0; j < 16; j++)
       buffer[i][j] = 0;
   }
-}
-
-void pintarLED1(int x, int y) {
-  Serial.println("Running PL1");
-  digitalWrite(0 + y, LOW);
-  digitalWrite(14 + x, HIGH);
-  delay(1);
-  digitalWrite(0 + y, HIGH);
-  digitalWrite(14 + x, LOW);
 }
 
 void frase() {
@@ -169,15 +162,14 @@ int potenciometroVidas = 0;
 int potenciometroVelocidad = 0;
 
 void configuracion() {
-  Serial.println("Running Config");
   potenciometroVelocidad = map(analogRead(A0), 0, 1024, 0, 8);
   potenciometroVidas = map(analogRead(A1), 0, 1024, 0, 8);
   velocidad = 200 - (potenciometroVelocidad * 15);
   vidaInicial = 3 + potenciometroVidas;
 
-  for (int i = 1; i < 3; i++) { //horizontal
+  for (int i = 1; i < 3; i++) {  //horizontal
     for (int j = 0; j < 16; j++) {
-      if (j < potenciometroVelocidad)
+      if (j <= potenciometroVelocidad)
         buffer[i][j] = 1;
       else
         buffer[i][j] = 0;
@@ -186,7 +178,7 @@ void configuracion() {
 
   for (int i = 4; i < 6; i++) {
     for (int j = 0; j < 16; j++) {
-      if (j < potenciometroVidas)
+      if (j <= potenciometroVidas)
         buffer[i][j] = 1;
       else
         buffer[i][j] = 0;
@@ -237,11 +229,15 @@ void iniciarJuego() {
     xAvion++;
     if (xAvion == 16) {
       xAvion = 0;
-      yAvion++;
     }
     if (yMina != -1) {
       moverMina();
     }
+  }
+  if (millis() - t3 >= 1000) {
+    t3 = millis();
+    yAvion++;
+    delayMicroseconds(0.5);
   }
   if (reading != lastButtonState) {
     lastDebounceTime = millis();
@@ -302,8 +298,9 @@ void pausarJuego() {
       state = 1;
     }
     if (reading == LOW && (buttonPressStartTime10P - buttonPressStartTime10) >= 2000 && (buttonPressStartTime10P - buttonPressStartTime10) < 3000) {
-      state = 2;
+      t3 = millis();
       buttonPressStartTime10P = buttonPressStartTime10;
+      state = 2;
     }
   }
   lastButtonState10P = reading;
@@ -333,11 +330,11 @@ void loop() {
         buttonState12 = reading;
         if (buttonState12 == HIGH) {
           vida = vidaInicial;
-          posicionRandom();  //crear nuevos edificios
-          xAvion = 0;
-          yAvion = 0;
-          delay(100);
-          state = 2;
+          cantidadEdificios = 3;
+          nivel = 1;
+          t3 = millis();
+          delay(50);
+          state = 5;
         }
       }
     }
@@ -380,12 +377,19 @@ void loop() {
       mostrarMatriz();
       temp++;
     } else {
-      Serial.println("Starting Config");
       configuracion();
     }
+    //---------------------------------------------------
+  } else if (state == 5) {  //show level number
+    mostrarNiveles();
+    matriz.clearDisplay(0);
+    if (millis() - t3 >= 2000) {
+      borrarAvion();
+      posicionRandom();  //crear nuevos edificios
+      xAvion = 0;
+      yAvion = 0;
+      t3 = millis();
+      state = 2;
+    }
   }
-
-  /*nivel = 10;
-  mostrarNiveles();
-  matriz.clearDisplay(0);*/
 }

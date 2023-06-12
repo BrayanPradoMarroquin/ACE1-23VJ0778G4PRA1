@@ -9,24 +9,24 @@ void pintarAvion() {
     yAvion = yAvion - 2;
     xAvion = xAvion - 2;
     vida--;
-    if(vida == 0){
+    if (vida == 0) {
       state = 1;
       xAvion = 0;
       yAvion = 0;
     }
   } else {
     buffer[yAvion][xAvion] = 1;
-    buffer[yAvion + 1][xAvion] = 1;
-    buffer[yAvion + 1][xAvion + 1] = 1;
-    buffer[yAvion + 1][xAvion + 2] = 1;
+    buffer[yAvion + 1][xAvion % 16] = 1;
+    buffer[yAvion + 1][(xAvion + 1) % 16] = 1;
+    buffer[yAvion + 1][(xAvion + 2) % 16] = 1;
   }
 }
 
 void borrarAvion() {
   buffer[yAvion][xAvion] = 0;
-  buffer[yAvion + 1][xAvion] = 0;
-  buffer[yAvion + 1][xAvion + 1] = 0;
-  buffer[yAvion + 1][xAvion + 2] = 0;
+  buffer[yAvion + 1][xAvion % 16] = 0;
+  buffer[yAvion + 1][(xAvion + 1) % 16] = 0;
+  buffer[yAvion + 1][(xAvion + 2) % 16] = 0;
 }
 
 void mina() {
@@ -38,18 +38,23 @@ void mina() {
 }
 
 void moverMina() {
-  if(buffer[yMina+1][xMina]==1){
+  if (buffer[yMina + 1][xMina] == 1) {
     borrarEdificio(xMina);
     edificioscolocados--;
+    if (edificioscolocados == 0) {
+      nivel++;
+      cantidadEdificios++;
+      state = 5;
+    }
     buffer[yMina][xMina] = 0;
     xMina = -1;
     yMina = -1;
-  }else{
+  } else {
     if (yMina != -1) {
-      buffer[yMina][xMina] = 0;  
+      buffer[yMina][xMina] = 0;
       if (yMina < 7) {
-        yMina++;                   
-        buffer[yMina][xMina] = 1; 
+        yMina++;
+        buffer[yMina][xMina] = 1;
       } else {
         xMina = -1;
         yMina = -1;
@@ -72,6 +77,3 @@ void mostrarMatriz() {
         else
           delayMicroseconds(50);
 }
-
-
-
