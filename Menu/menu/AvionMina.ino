@@ -10,10 +10,10 @@ void pintarAvion() {
     xAvion = xAvion - 2;
     vida--;
     if (vida == 0) {
-      state = 1;
+      state = 0;
       xAvion = 0;
       yAvion = 0;
-      cantidadEdificios = 3;
+      punteos[Partida%5][1] = punteoPartida;
     }
   } else {
     buffer[yAvion][xAvion] = 1;
@@ -41,6 +41,10 @@ void mina() {
 void moverMina() {
   if (buffer[yMina + 1][xMina] == 1) {
     borrarEdificio(xMina);
+    punteoPartida++;
+    if(punteoPartida % 5 == 0 && punteoPartida != 0){
+      vida++;
+    }
     edificioscolocados--;
     if (edificioscolocados == 0) {
       nivel++;

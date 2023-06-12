@@ -17,7 +17,9 @@ void calcularP() {
 }
 
 void retorno(double porcentaje) {
-  if (porcentaje > 0 && porcentaje <= 13) {
+  if(porcentaje == 0){
+    temp1 = 0;
+  }else if (porcentaje > 0 && porcentaje <= 13) {
     temp1 = 1;
   } else if (porcentaje > 13 && porcentaje <= 25) {
     temp1 = 2;

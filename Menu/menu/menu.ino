@@ -38,11 +38,11 @@ byte buffer[8][16] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
 
-double punteos[5][4] = { { 1, 3, 0, 0 },
-                         { 2, 4, 0, 0 },
-                         { 3, 5, 0, 0 },
-                         { 4, 6, 0, 0 },
-                         { 5, 4, 0, 0 } };
+double punteos[5][4] = { { 1, 0, 0, 0 },
+                         { 2, 0, 0, 0 },
+                         { 3, 0, 0, 0 },
+                         { 4, 0, 0, 0 },
+                         { 5, 0, 0, 0 } };
 
 long int t0 = 0;
 long int t1 = 0;
@@ -94,7 +94,8 @@ int cont = 0;
 
 int temp = 0;
 
-int punteoGlobal = 0;
+int Partida = -1; //Numero de partidas jugadas
+int punteoPartida = 0; //Punteo por partida
 
 void limpiarBuffer() {
   for (int i = 0; i < 8; i++) {
@@ -298,6 +299,7 @@ void pausarJuego() {
     if (reading == LOW && (buttonPressStartTime10P - buttonPressStartTime10) >= 3000) {
       limpiarEdificios();
       buttonPressStartTime10P = buttonPressStartTime10;
+      punteos[Partida%5][1] = punteoPartida;
       delay(100);
       state = 1;
     }
@@ -335,6 +337,9 @@ void loop() {
         buttonState12 = reading;
         if (buttonState12 == HIGH) {
           vida = vidaInicial;
+          punteoPartida = 0;
+          Partida++;
+          limpiarEdificios();
           cantidadEdificios = 3;
           nivel = 1;
           t3 = millis();
