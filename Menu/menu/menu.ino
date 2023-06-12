@@ -81,6 +81,8 @@ int aumentar = -4;
 int cantidadEdificios = 3;
 int edificioscolocados = 0;
 
+int temp = 0;
+
 int punteoGlobal = 0;
 int punteos[5][2] = { { 0, 0 },
                       { 0, 0 },
@@ -93,6 +95,15 @@ void limpiarBuffer() {
     for (int j = 0; j < 16; j++)
       buffer[i][j] = 0;
   }
+}
+
+void pintarLED1(int x, int y) {
+  Serial.println("Running PL1");
+  digitalWrite(0 + y, LOW);
+  digitalWrite(14 + x, HIGH);
+  delay(1);
+  digitalWrite(0 + y, HIGH);
+  digitalWrite(14 + x, LOW);
 }
 
 void frase() {
@@ -151,6 +162,108 @@ void frase() {
   delay(2);
   mostrarMatriz();
   delay(1);
+}
+
+/// CABIO DE VIDAS Y VELOCIDAD (CONFIGURACION)
+int potenciometroVidas = 0;
+int potenciometroVelocidad = 0;
+
+void configuracion() {
+  Serial.println("Running Config");
+  potenciometroVelocidad = map(analogRead(A0), 0, 1024, 0, 8);
+  potenciometroVidas = map(analogRead(A1), 0, 1024, 0, 8);
+  if (potenciometroVelocidad == 0)
+    velocidad = 200;
+  return;
+  if (potenciometroVelocidad >= 1) {
+    // *
+    velocidad = 185;
+    pintarLED1(0, 1);
+    pintarLED1(0, 2);
+  }
+  if (potenciometroVelocidad >= 2) {
+    // **
+    velocidad = 170;
+    pintarLED1(1, 1);
+    pintarLED1(1, 2);
+  }
+  if (potenciometroVelocidad >= 3) {
+    // *
+    velocidad = 155;
+    pintarLED1(2, 1);
+    pintarLED1(2, 2);
+  }
+  if (potenciometroVelocidad >= 4) {
+    // **
+    velocidad = 140;
+    pintarLED1(3, 1);
+    pintarLED1(3, 2);
+  }
+  if (potenciometroVelocidad >= 5) {
+    // ***
+    velocidad = 125;
+    pintarLED1(4, 1);
+    pintarLED1(4, 2);
+  }
+  if (potenciometroVelocidad >= 6) {
+    // **
+    velocidad = 110;
+    pintarLED1(5, 1);
+    pintarLED1(5, 2);
+  }
+  if (potenciometroVelocidad >= 7) {
+    // ***
+    velocidad = 95;
+    pintarLED1(6, 1);
+    pintarLED1(6, 2);
+  }
+
+
+  if (potenciometroVidas == 0)
+    vidaInicial = 3;
+  return;
+  if (potenciometroVidas >= 1) {
+    // *
+    vidaInicial = 4;
+    pintarLED1(0, 5);
+    pintarLED1(0, 6);
+  }
+  if (potenciometroVidas >= 2) {
+    // **
+    vidaInicial = 5;
+    pintarLED1(1, 5);
+    pintarLED1(1, 6);
+  }
+  if (potenciometroVidas >= 3) {
+    // *
+    vidaInicial = 6;
+    pintarLED1(2, 5);
+    pintarLED1(2, 6);
+  }
+  if (potenciometroVidas >= 4) {
+    // **
+    vidaInicial = 7;
+    pintarLED1(3, 5);
+    pintarLED1(3, 6);
+  }
+  if (potenciometroVidas >= 5) {
+    // ***
+    vidaInicial = 8;
+    pintarLED1(4, 5);
+    pintarLED1(4, 6);
+  }
+  if (potenciometroVidas >= 6) {
+    // **
+    vidaInicial = 9;
+    pintarLED1(5, 5);
+    pintarLED1(5, 6);
+  }
+  if (potenciometroVidas >= 7) {
+    // ***
+    vidaInicial = 10;
+    pintarLED1(6, 5);
+    pintarLED1(6, 6);
+  }
 }
 
 void iniciarJuego() {
@@ -245,8 +358,12 @@ void loop() {
     delay(10);
     mostrarMenu();
     int reading = digitalRead(12);
+    int reading11 = digitalRead(11);
     if (reading != lastButtonState12) {
       lastDebounceTime12 = millis();
+    }
+    if (reading11 != lastButtonState11) {
+      lastDebounceTime11 = millis();
     }
 
     if ((millis() - lastDebounceTime12) > debounceDelay) {
@@ -254,15 +371,23 @@ void loop() {
         buttonState12 = reading;
         if (buttonState12 == HIGH) {
           vida = vidaInicial;
-          Serial.println("ttttttttt: ");
-          Serial.println(edificioscolocados);
-          Serial.println(cantidadEdificios);
           posicionRandom();  //crear nuevos edificios
           delay(100);
           state = 2;
         }
       }
     }
+
+    if ((millis() - lastDebounceTime11) > debounceDelay) {
+      if (reading11 != buttonState11) {
+        buttonState11 = reading11;
+        if (buttonState11 == HIGH) {
+          delay(100);
+          state = 4;
+        }
+      }
+    }
+    lastButtonState11 = reading11;
     lastButtonState12 = reading;
     //---------------------------------------------------
   } else if (state == 2) {
@@ -284,6 +409,16 @@ void loop() {
     //---------------------------------------------------
   } else if (state == 3) {
     pausarJuego();
+    //---------------------------------------------------
+  } else if (state == 4) {
+    if (temp == 0) {
+      limpiarBuffer();
+      mostrarMatriz();
+      temp++;
+    } else {
+      Serial.println("Starting Config");
+      configuracion();
+    }
   }
 
   /*nivel = 10;
