@@ -32,7 +32,7 @@ void borrarAvion() {
 
 void mina() {
   if (xMina == -1 && yMina == -1) {
-    xMina = xAvion;
+    xMina = xAvion + 1;
     yMina = yAvion + 2;
     buffer[yMina][xMina] = 1;
   }
